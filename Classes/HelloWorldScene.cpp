@@ -76,7 +76,7 @@ bool HelloWorld::init()
 
 void HelloWorld::startButtonCallback(CCObject* pSender)
 {
-	CCScene* GameScene = Game_easy::scene();
+	CCScene* GameScene = Game_Select::scene();
 
 	CCDirector::sharedDirector()->pushScene(CCTransitionSlideInR::create(1, GameScene));
 }

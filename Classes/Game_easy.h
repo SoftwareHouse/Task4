@@ -14,6 +14,7 @@ public:
 	static CCScene* scene();
 	int Card_num, row_pre, line_pre;
 	int times;
+	bool Change;
 	CCLabelTTF* numsTTF;
 	CCProgressTimer * pr;
 	CCTexture2D* texture[LINE*LINE/2];

@@ -1,6 +1,6 @@
 #include "Task4.h"
-#define IMG_LENGTH 47
-#define IMG_HEIGHT 63
+#define IMG_LENGTH 50
+#define IMG_HEIGHT 68
 
 Game_easy::Game_easy()
 {
@@ -26,6 +26,7 @@ bool Game_easy::init()
 	bool bRet = false;
 	srand((unsigned)time(0));
 	Card_num = -1;
+	Change = false;
 
 	do 
 	{
@@ -51,7 +52,7 @@ bool Game_easy::init()
 		}
 
 		//Ëæ»ú»¯¿¨Æ¬Î»ÖÃ
-		for(int i = 1; i <= LINE*LINE/2; i++)
+		for(int i = 0; i < LINE*LINE/2; i++)
 		{
 			int x = random();
 			int y = random();
@@ -77,7 +78,7 @@ bool Game_easy::init()
 		{
 			for(int j = 0; j < LINE; j++)
 			{
-				Card_Back[j+i*LINE] = CCSprite::create("beimian_test.png");
+				Card_Back[j+i*LINE] = CCSprite::create("beimian.png");
 				Card_Back[j+i*LINE]->setPosition(ccp(100+j*IMG_LENGTH, 60+i*IMG_HEIGHT));
 				addChild(Card_Back[j+i*LINE]);
 			}
@@ -106,15 +107,16 @@ bool Game_easy::init()
 		pr->setType(kCCProgressTimerTypeBar);
 		pr->setPercentage(100);
 		pr->setMidpoint(ccp(0,0.5));
-		CCProgressTo * to1= CCProgressTo::create(100, 100);
+		CCProgressTo * to1= CCProgressTo::create(Global::Game_Time, 100);
 		pr->setReverseProgress(true);
 		pr->runAction(CCRepeatForever::create(to1));
 		addChild(pr);
 
-		this->scheduleOnce(schedule_selector(Game_easy::Lose_Result), 100);
+		this->scheduleOnce(schedule_selector(Game_easy::Lose_Result), Global::Game_Time);
 
 		bRet = true;
 	} while (0);
+
 
 	return bRet;
 }
@@ -132,7 +134,7 @@ void Game_easy::ccTouchesEnded (cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEve
 	location = CCDirector::sharedDirector()->convertToGL(location);
 
 	//ÉèÖÃÌæ»»Í¼Æ¬
-	for(int i = 0; i < LINE*LINE/2; i++)
+	for(int i = Global::Img_Beg; i < Global::Img_Beg+LINE*LINE/2; i++)
 	{
 		string temp;
 		char num[10];
@@ -140,32 +142,46 @@ void Game_easy::ccTouchesEnded (cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEve
 		itoa(i, num, 10);
 		temp = temp+num+".png";
 
-		texture[i] = CCTextureCache::sharedTextureCache()->addImage(temp.c_str());
+		texture[i-Global::Img_Beg] = CCTextureCache::sharedTextureCache()->addImage(temp.c_str());
 	}
-	texture_back = CCTextureCache::sharedTextureCache()->addImage("beimian_test.png");
+	texture_back = CCTextureCache::sharedTextureCache()->addImage("beimian.png");
 
 	int row_now, line_now;
 
 	line_now = (location.y-30)/IMG_HEIGHT;
 	row_now = (location.x-75)/IMG_LENGTH;
+	bool flag = (line_now != line_pre) || (row_now != row_pre);
+	if(((Card_Sort[line_now][row_now] != -1) || (Card_Sort[line_pre][row_pre] != -1)) || Change == true)
+	{
+		if(Card_Sort[line_now][row_now] != -1)
+		{
+			Card_Back[line_now*LINE+row_now]->setTexture(texture[Card_Sort[line_now][row_now]]);
+		}
 
+		Change = false;
 
-	Card_Back[line_now*LINE+row_now]->setTexture(texture[Card_Sort[line_now][row_now]]);
-	if(Card_num == -1)
-	{
-		Card_num = Card_Sort[line_now][row_now];
-	}
-	else if((Card_num == Card_Sort[line_now][row_now]) && (line_now != line_pre) && (row_now != row_pre))
-	{
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Audio_gold.mp3");
-		times++;
-		Card_num = -1;
-	}
-	else
-	{
-		Card_num = -1;
-		Card_Back[line_now*LINE+row_now]->setTexture(texture_back);
-		Card_Back[line_pre*LINE+row_pre]->setTexture(texture_back);
+		if(Card_num == -1)
+		{
+			Card_num = Card_Sort[line_now][row_now];
+		}
+		else if((Card_num == Card_Sort[line_now][row_now]) && ((line_now != line_pre) || (row_now != row_pre)))
+		{
+			if(Global::isEffectOn)
+			{
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("Audio_gold.mp3");
+			}
+			times++;
+			Card_Sort[line_pre][row_pre] = -1;
+			Card_Sort[line_now][row_now] = -1;
+			Card_num = -1;
+			Change = true;
+		}
+		else
+		{
+			Card_num = -1;
+			Card_Back[line_now*LINE+row_now]->setTexture(texture_back);
+			Card_Back[line_pre*LINE+row_pre]->setTexture(texture_back);
+		}
 	}
 
 	line_pre = line_now;

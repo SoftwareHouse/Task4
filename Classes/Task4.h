@@ -11,6 +11,7 @@ USING_NS_CC;
 #include "Game_easy.h"
 #include "Lose.h"
 #include "Victory.h"
+#include "Game_Select.h"
 #include <iostream>
 using namespace std;
 #endif
