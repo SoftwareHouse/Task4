@@ -66,7 +66,10 @@ bool HelloWorld::init()
 		CCMenu* optionItemMenu = CCMenu::create(optionItem , NULL);
 		optionItemMenu->setPosition(CCPointZero);
 		addChild(optionItemMenu);
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Audio_bgm_home.mp3",true);
+		if(Global::isMusicOn)
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Audio_bgm_home.mp3",true);
+		}
 
 		bRet = true;
 	} while (0);

@@ -77,7 +77,7 @@ bool Game_Select::init()
 
 void Game_Select::EasyCallback(CCObject* pSender)
 {
-	Global::Game_Time = 1000;
+	Global::Game_Time = 360;
 
 	Global::Img_Beg = 0;
 
@@ -88,7 +88,7 @@ void Game_Select::EasyCallback(CCObject* pSender)
 
 void Game_Select::NormalCallback(CCObject* pSender)
 {
-	Global::Game_Time = 600;
+	Global::Game_Time = 180;
 
 	Global::Img_Beg = 0+(LINE*LINE/2);
 
@@ -99,7 +99,7 @@ void Game_Select::NormalCallback(CCObject* pSender)
 
 void Game_Select::HardCallback(CCObject* pSender)
 {
-	Global::Game_Time = 300;
+	Global::Game_Time = 80;
 
 	Global::Img_Beg = 0+(LINE*LINE/2)*2;
 
@@ -110,7 +110,7 @@ void Game_Select::HardCallback(CCObject* pSender)
 
 void Game_Select::TopCallback(CCObject* pSender)
 {
-	Global::Game_Time = 120;
+	Global::Game_Time = 60;
 
 	Global::Img_Beg = 0+(LINE*LINE/2)*3;
 
